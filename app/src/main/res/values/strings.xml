@@ -6,4 +6,6 @@
     <string name="button_more_words">More Words</string>
     <string name="title_activity_word_detail">Word List</string>
 
+    <string name="action_share">Share</string>
+
 </resources>

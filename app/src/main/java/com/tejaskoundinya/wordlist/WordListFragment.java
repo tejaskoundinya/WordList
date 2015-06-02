@@ -17,7 +17,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,8 +31,10 @@ import com.tejaskoundinya.wordlist.com.tejaskoundinya.wordlist.data.WordContract
  */
 public class WordListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private String LOG_TAG = WordListFragment.class.getSimpleName();
+
     private static final int WORD_LOADER = 0;
-    ListView listView = null;
+    GridView listView = null;
     Button button = null;
     private WordListAdapter wordListAdapter;
 
@@ -59,7 +63,7 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         wordListAdapter = new WordListAdapter(getActivity(), null, 0);
 
-        listView =  (ListView) rootView.findViewById(R.id.listView_word);
+        listView =  (GridView) rootView.findViewById(R.id.listView_word);
         listView.setAdapter(wordListAdapter);
 
         ConnectivityManager connMgr = (ConnectivityManager)
@@ -70,6 +74,22 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
         } else {
             (Toast.makeText(getActivity().getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT)).show();
         }
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                // CursorAdapter returns a cursor at the correct position for getItem(), or null
+                // if it cannot seek to that position.
+                Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+                if (cursor != null) {
+                    Intent intent = new Intent(getActivity(), WordDetail.class);
+                    intent.putExtra("word", cursor.getString(COL_WORD_NAME));
+                    intent.putExtra("meaning", cursor.getString(COL_WORD_MEANING));
+                    startActivity(intent);
+                }
+            }
+        });
 
         //new HttpGetTask().execute();
         button = (Button) rootView.findViewById(R.id.button_more_words);
@@ -100,7 +120,7 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.v("Umbala", "onCreateLoader");
+        Log.v(LOG_TAG, "onCreateLoader");
         Uri wordUri = WordEntry.buildWord();
         String sortOrder = "RANDOM()";
 
@@ -110,7 +130,7 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         wordListAdapter.swapCursor(data);
-        Log.v("Umbala", "Cursor Swapped");
+        Log.v(LOG_TAG, "Cursor Swapped");
     }
 
     @Override

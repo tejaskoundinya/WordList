@@ -20,7 +20,7 @@ public class WordDetail extends ActionBarActivity {
         setContentView(R.layout.activity_word_detail);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new WordDetailFragment())
                     .commit();
         }
     }
@@ -29,7 +29,7 @@ public class WordDetail extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_word_detail, menu);
+        //getMenuInflater().inflate(R.menu.menu_word_detail, menu);
         return true;
     }
 
@@ -48,19 +48,4 @@ public class WordDetail extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_word_detail, container, false);
-            return rootView;
-        }
-    }
 }
