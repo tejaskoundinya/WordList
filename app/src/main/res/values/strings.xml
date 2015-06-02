@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Word List</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="button_more_words">More Words</string>
+    <string name="title_activity_word_detail">Word List</string>
+
+</resources>
