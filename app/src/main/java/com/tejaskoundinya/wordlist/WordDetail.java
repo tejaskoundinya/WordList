@@ -19,9 +19,9 @@ public class WordDetail extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word_detail);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
+            /*getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new WordDetailFragment())
-                    .commit();
+                    .commit();*/
         }
     }
 

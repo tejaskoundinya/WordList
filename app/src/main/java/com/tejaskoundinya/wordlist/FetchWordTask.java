@@ -54,6 +54,11 @@ public class FetchWordTask extends AsyncTask<Void, Void, String> {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if(jsonArray == null) {
+            return;
+        }
+
         JSONObject[] jsonObjects = new JSONObject[jsonArray.length()];
 
         for(int i = 0; i < jsonArray.length(); i++) {

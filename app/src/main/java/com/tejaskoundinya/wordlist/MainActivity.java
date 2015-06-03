@@ -6,19 +6,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements WordListFragment.WordClicked {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
+            /*getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new WordListFragment())
-                    .commit();
+                    .commit();*/
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -42,4 +41,9 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void sendWord(String word, String meaning) {
+        WordDetailFragment wordDetailFragment = (WordDetailFragment) getSupportFragmentManager().findFragmentById(R.id.frag_detail);
+        wordDetailFragment.updateWord(word, meaning);
+    }
 }

@@ -2,8 +2,10 @@ package com.tejaskoundinya.wordlist;
 
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -37,6 +39,7 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
     GridView listView = null;
     Button button = null;
     private WordListAdapter wordListAdapter;
+    WordClicked mCallback;
 
     private static final int DETAIL_LOADER = 0;
 
@@ -55,6 +58,10 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
     private static final int COL_WORD_POS = 3;
 
     public WordListFragment() {
+    }
+
+    public interface WordClicked {
+        public void sendWord(String word, String meaning);
     }
 
     @Override
@@ -83,10 +90,16 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
                 // if it cannot seek to that position.
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) {
-                    Intent intent = new Intent(getActivity(), WordDetail.class);
-                    intent.putExtra("word", cursor.getString(COL_WORD_NAME));
-                    intent.putExtra("meaning", cursor.getString(COL_WORD_MEANING));
-                    startActivity(intent);
+                    //Toast.makeText(getActivity(), (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) + ", " + Configuration.SCREENLAYOUT_SIZE_LARGE, Toast.LENGTH_LONG).show();
+                    if( (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE ) {
+                        mCallback.sendWord(cursor.getString(COL_WORD_NAME), cursor.getString(COL_WORD_MEANING));
+                    }
+                    else {
+                        Intent intent = new Intent(getActivity(), WordDetail.class);
+                        intent.putExtra("word", cursor.getString(COL_WORD_NAME));
+                        intent.putExtra("meaning", cursor.getString(COL_WORD_MEANING));
+                        startActivity(intent);
+                    }
                 }
             }
         });
@@ -107,10 +120,23 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
             if (networkInfo != null && networkInfo.isConnected()) {
                 new FetchWordTask(getActivity().getApplicationContext()).execute();
             } else {
+                getLoaderManager().getLoader(WORD_LOADER).forceLoad();
                 (Toast.makeText(getActivity().getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT)).show();
             }
         }
     };
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try {
+            mCallback = (WordClicked) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement WordClicked");
+        }
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -130,6 +156,10 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         wordListAdapter.swapCursor(data);
+        if( (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE ) {
+            data.moveToFirst();
+            mCallback.sendWord(data.getString(COL_WORD_NAME), data.getString(COL_WORD_MEANING));
+        }
         Log.v(LOG_TAG, "Cursor Swapped");
     }
 

@@ -1,6 +1,7 @@
 package com.tejaskoundinya.wordlist;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -26,6 +27,7 @@ public class WordDetailFragment extends Fragment {
 
     private static final String WORD_SHARE_HASHTAG = " #WordListApp";
     private ShareActionProvider mShareActionProvider;
+    private Intent shareIntent;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -35,7 +37,8 @@ public class WordDetailFragment extends Fragment {
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
         if (word != null) {
-            mShareActionProvider.setShareIntent(createShareWordIntent());
+            shareIntent = createShareWordIntent();
+            mShareActionProvider.setShareIntent(shareIntent);
         }
     }
 
@@ -56,12 +59,28 @@ public class WordDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_word_detail, container, false);
         ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        word = getActivity().getIntent().getStringExtra("word");
-        meaning = getActivity().getIntent().getStringExtra("meaning");
         textView_word = (TextView) rootView.findViewById(R.id.textView_detail_word);
         textView_meaning = (TextView) rootView.findViewById(R.id.textView_detail_meaning);
+        if( (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) < Configuration.SCREENLAYOUT_SIZE_LARGE ) {
+            word = getActivity().getIntent().getStringExtra("word");
+            meaning = getActivity().getIntent().getStringExtra("meaning");
+            textView_word.setText(word);
+            textView_meaning.setText(meaning);
+        }
+        else {
+            word = "Abc";
+            meaning = "Xyz";
+        }
+        return rootView;
+    }
+
+    public void updateWord(String word, String meaning) {
+        this.word = word;
+        this.meaning = meaning;
         textView_word.setText(word);
         textView_meaning.setText(meaning);
-        return rootView;
+        if(shareIntent != null) {
+            shareIntent.putExtra(Intent.EXTRA_TEXT, "Word: " + this.word + "\nMeaning: " + this.meaning + "\n" + WORD_SHARE_HASHTAG);
+        }
     }
 }
