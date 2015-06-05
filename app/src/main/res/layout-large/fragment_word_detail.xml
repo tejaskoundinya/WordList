@@ -4,7 +4,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.tejaskoundinya.wordlist.WordDetail">
+    tools:context="com.tejaskoundinya.wordlist.WordDetailActivity">
 
     <TextView
         android:layout_width="fill_parent"

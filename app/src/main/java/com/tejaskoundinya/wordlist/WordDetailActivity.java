@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.os.Build;
 
 
-public class WordDetail extends ActionBarActivity {
+public class WordDetailActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

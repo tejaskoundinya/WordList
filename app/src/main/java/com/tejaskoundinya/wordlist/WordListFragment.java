@@ -23,10 +23,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.tejaskoundinya.wordlist.com.tejaskoundinya.wordlist.data.WordContract;
 import com.tejaskoundinya.wordlist.com.tejaskoundinya.wordlist.data.WordContract.WordEntry;
 
 /**
@@ -41,6 +39,7 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
     Button button = null;
     private WordListAdapter wordListAdapter;
     WordClicked mCallback;
+    private int mClickPosition;
 
     private static final int DETAIL_LOADER = 0;
 
@@ -57,6 +56,18 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
     private static final int COL_WORD_NAME = 1;
     private static final int COL_WORD_MEANING = 2;
     private static final int COL_WORD_POS = 3;
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().getIntent().putExtra("clickPosition", mClickPosition);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mClickPosition = getActivity().getIntent().getIntExtra("clickPosition", 0);
+    }
 
     public WordListFragment() {
     }
@@ -90,6 +101,7 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
                 // CursorAdapter returns a cursor at the correct position for getItem(), or null
                 // if it cannot seek to that position.
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+                mClickPosition = position;
                 if (cursor != null) {
                     //Toast.makeText(getActivity(), (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) + ", " + Configuration.SCREENLAYOUT_SIZE_LARGE, Toast.LENGTH_LONG).show();
                     // Check form factor of device. Large form factors behave differently with a different layout.
@@ -97,7 +109,7 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
                         mCallback.sendWord(cursor.getString(COL_WORD_NAME), cursor.getString(COL_WORD_MEANING));
                     }
                     else {
-                        Intent intent = new Intent(getActivity(), WordDetail.class);
+                        Intent intent = new Intent(getActivity(), WordDetailActivity.class);
                         intent.putExtra("word", cursor.getString(COL_WORD_NAME));
                         intent.putExtra("meaning", cursor.getString(COL_WORD_MEANING));
                         startActivity(intent);
@@ -166,7 +178,7 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
         // Check form factor of device. Large form factors behave differently with a different layout.
         if( (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE ) {
             try {
-                data.moveToFirst();
+                data.move(mClickPosition);
                 mCallback.sendWord(data.getString(COL_WORD_NAME), data.getString(COL_WORD_MEANING));
             } catch (CursorIndexOutOfBoundsException e) {
                 Log.e(LOG_TAG, e.getMessage());
