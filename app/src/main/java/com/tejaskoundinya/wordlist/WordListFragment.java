@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -161,8 +162,13 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
         wordListAdapter.swapCursor(data);
         // Check form factor of device. Large form factors behave differently with a different layout.
         if( (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE ) {
-            data.moveToFirst();
-            mCallback.sendWord(data.getString(COL_WORD_NAME), data.getString(COL_WORD_MEANING));
+            try {
+                data.moveToFirst();
+                mCallback.sendWord(data.getString(COL_WORD_NAME), data.getString(COL_WORD_MEANING));
+            } catch (CursorIndexOutOfBoundsException e) {
+                Log.e(LOG_TAG, e.getMessage());
+                return;
+            }
         }
         Log.v(LOG_TAG, "Cursor Swapped");
     }
