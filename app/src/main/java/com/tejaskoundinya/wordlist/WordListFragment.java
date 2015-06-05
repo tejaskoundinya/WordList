@@ -159,6 +159,9 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if(data == null) {
+            return;
+        }
         wordListAdapter.swapCursor(data);
         // Check form factor of device. Large form factors behave differently with a different layout.
         if( (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE ) {
