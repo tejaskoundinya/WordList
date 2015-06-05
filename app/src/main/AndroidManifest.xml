@@ -27,12 +27,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tejaskoundinya.wordlist.MainActivity" />
         </activity>
+
         <provider
-            android:authorities="com.tejaskoundinya.wordlist"
             android:name=".com.tejaskoundinya.wordlist.data.WordProvider"
+            android:authorities="com.tejaskoundinya.wordlist"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true" >
         </provider>
+
+        <receiver
+            android:name=".WordReminderReceiver"
+            android:enabled="true"
+            android:exported="true" >
+        </receiver>
     </application>
 
 </manifest>

@@ -48,6 +48,7 @@ public class FetchWordTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
+        // Parse JSON file
         JSONArray jsonArray = null;
         try {
             jsonArray = new JSONArray(result);
@@ -100,6 +101,7 @@ public class FetchWordTask extends AsyncTask<Void, Void, String> {
     }
 
     private String downloadPage() {
+        // Call custom API created. Returns a list of 10 words and meanings
         String strurl = "http://tejaskoundinya-words-app.appspot.com/english_words";
         StringBuilder builder = new StringBuilder();
         HttpClient httpClient = new DefaultHttpClient();

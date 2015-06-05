@@ -91,6 +91,7 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) {
                     //Toast.makeText(getActivity(), (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) + ", " + Configuration.SCREENLAYOUT_SIZE_LARGE, Toast.LENGTH_LONG).show();
+                    // Check form factor of device. Large form factors behave differently with a different layout.
                     if( (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE ) {
                         mCallback.sendWord(cursor.getString(COL_WORD_NAME), cursor.getString(COL_WORD_MEANING));
                     }
@@ -104,7 +105,6 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
             }
         });
 
-        //new HttpGetTask().execute();
         button = (Button) rootView.findViewById(R.id.button_more_words);
         button.setOnClickListener(buttonClick);
 
@@ -120,6 +120,7 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
             if (networkInfo != null && networkInfo.isConnected()) {
                 new FetchWordTask(getActivity().getApplicationContext()).execute();
             } else {
+                // Forcing the loader to load existing data if there is no internet connection
                 getLoaderManager().getLoader(WORD_LOADER).forceLoad();
                 (Toast.makeText(getActivity().getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT)).show();
             }
@@ -130,6 +131,7 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
+        // Callback for inter fragment communication
         try {
             mCallback = (WordClicked) activity;
         } catch (ClassCastException e) {
@@ -146,6 +148,7 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        // Creating a CursorLoader
         Log.v(LOG_TAG, "onCreateLoader");
         Uri wordUri = WordEntry.buildWord();
         String sortOrder = "RANDOM()";
@@ -156,6 +159,7 @@ public class WordListFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         wordListAdapter.swapCursor(data);
+        // Check form factor of device. Large form factors behave differently with a different layout.
         if( (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE ) {
             data.moveToFirst();
             mCallback.sendWord(data.getString(COL_WORD_NAME), data.getString(COL_WORD_MEANING));

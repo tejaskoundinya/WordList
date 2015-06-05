@@ -7,5 +7,5 @@
     <string name="title_activity_word_detail">Word List</string>
 
     <string name="action_share">Share</string>
-
+    <string name="button_remind">Remind In an Hour</string>
 </resources>

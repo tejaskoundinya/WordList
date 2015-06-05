@@ -12,38 +12,6 @@ import android.widget.TextView;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
-/**
- * Created by tejas
- */
-/*public class WordListAdapter extends ArrayAdapter<JSONObject> {
-    private Context context;
-    private JSONObject[] jsonObject;
-    public WordListAdapter(Context context, JSONObject[] jsonObject) {
-        super(context, R.layout.row_layout, jsonObject);
-        this.context = context;
-        this.jsonObject = jsonObject;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.row_layout, parent, false);
-        TextView word = (TextView) rowView.findViewById(R.id.tv_word);
-        TextView meaning = (TextView) rowView.findViewById(R.id.tv_meaning);
-        String s_word = "";
-        String s_meaning = "";
-        try {
-            s_word = (String)jsonObject[position].get("word");
-            s_meaning = (String)jsonObject[position].get("meaning");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        word.setText(s_word);
-        meaning.setText(s_meaning);
-        return rowView;
-    }
-}*/
-
 public class WordListAdapter extends CursorAdapter {
 
     public WordListAdapter(Context context, Cursor c, int flags) {
