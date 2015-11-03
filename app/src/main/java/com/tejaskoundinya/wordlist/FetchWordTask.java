@@ -8,19 +8,19 @@ import android.widget.ListView;
 
 import com.tejaskoundinya.wordlist.com.tejaskoundinya.wordlist.data.WordContract;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Vector;
 
 /**
@@ -103,28 +103,30 @@ public class FetchWordTask extends AsyncTask<Void, Void, String> {
     private String downloadPage() {
         // Call custom API created. Returns a list of 10 words and meanings
         String strurl = "http://tejaskoundinya-words-app.appspot.com/english_words";
-        StringBuilder builder = new StringBuilder();
-        HttpClient httpClient = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(strurl);
+        URL url = null;
+        String response = "";
+        HttpURLConnection connection = null;
 
         try {
-            HttpResponse response = httpClient.execute(httpGet);
-            StatusLine statusLine = response.getStatusLine();
-            int statusCode = statusLine.getStatusCode();
-            if(statusCode == 200) {
-                HttpEntity entity = response.getEntity();
-                InputStream content = entity.getContent();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(content));
-                String line;
-                while((line = reader.readLine()) != null) {
-                    builder.append(line);
-                }
-                Log.v("Getter", "Your data: " + builder.toString());
-            }
+            url = new URL(strurl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+         try {
+             connection = (HttpURLConnection)url.openConnection();
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
+
+        try {
+            InputStream inputStream = new BufferedInputStream(connection.getInputStream());
+            response = IOUtils.toString(inputStream);
+            Log.v("Getter", "Your data: " + response);
         } catch(Exception e) {
             e.printStackTrace();
         }
 
-        return builder.toString();
+        return response;
     }
 }
